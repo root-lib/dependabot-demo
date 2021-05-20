@@ -7,9 +7,20 @@ updates:
       interval: "daily"
   - package-ecosystem: npm
     directory: "/javascript"
+    allow:
+    # Allow both direct and indirect updates for all packages
+      - dependency-type: "all"
     schedule:
       interval: daily
+    assignees:
+      - "root-lib"
+    reviewers:
+      - "root-lib"
+    target-branch: "dev"
+    labels:
+      - "security checks"
   - package-ecosystem: bundler
     directory: "/ruby"
+    target-branch: "dev"
     schedule:
       interval: weekly
