@@ -2,18 +2,50 @@ name: Android CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  static-query:
+    runs-on: ubuntu-16.04
     steps:
-    - uses: actions/checkout@v1
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v1
+    - uses: actions/checkout@v2
+    - uses: ./
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        java-version: 1.8
+        query: samples/oss-vuln.yaml
+        outputFile: vulnResult.json
+    - name: Upload vuln-results
+      uses: actions/upload-artifact@v2
+      with:
+        name: vulnResult
+        path: vulnResult.json
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
+    steps:
+      - run: build
+  printresults:
+    name: download results
+    needs: static-query
+    runs-on: windows-latest
+    steps:
+      - name: Download vulnresults
+        uses: actions/download-artifact@v2
+        with:
+          name: vulnResult
+      - shell: bash
+        run: |
+          value=`cat vulnResult.json`
+          echo $value
