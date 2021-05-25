@@ -14,7 +14,7 @@ query: '
           }
       }
   }
-}
+}'
 variables:
   owner: root-lib
   name: dependabot-demo
