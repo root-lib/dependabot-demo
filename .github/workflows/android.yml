@@ -22,15 +22,14 @@ jobs:
       with:
         name: vulnResult
         path: vulnResult.json
-    - name: Analyse ressults
+    - name: Analyse results
       id: analyse_vuln
       uses: root-lib/dependabot-action@main
       with:
-        name: vulnResult
-        path: vulnResult.json
+        path: 'vulnResult.json'
     - name: Print results json
       run: |
-        echo "${{steps.analyse_vuln.outputs.vulnAlerts}}"
+        echo "${{steps.analyse_vuln.outputs.ticketLists}}"
   printresults:
     name: download results
     needs: static-query
