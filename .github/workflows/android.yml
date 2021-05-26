@@ -27,6 +27,8 @@ jobs:
       uses: root-lib/dependabot-action@main
       with:
         path: 'vulnResult.json'
+        url: 'https://jira.corp.razorpay.com/rest/api/2/issue'
+        token: ${{ secrets.JIRA_TOKEN }}
     - name: Print results json
       run: |
         echo "${{steps.analyse_vuln.outputs.ticketLists}}"
