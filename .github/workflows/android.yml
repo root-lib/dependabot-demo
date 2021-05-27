@@ -1,4 +1,4 @@
-name: Android CI
+name: dependbot_tickets
 
 on:
   push:
@@ -11,17 +11,6 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
-    - uses: helaili/github-graphql-action@2.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
-      with:
-        query: samples/oss-vuln.yaml
-        outputFile: vulnResult.json
-    - name: Upload vuln-results
-      uses: actions/upload-artifact@v2
-      with:
-        name: vulnResult
-        path: vulnResult.json
     - name: Analyse results
       id: analyse_vuln
       uses: root-lib/dependabot-action@main
@@ -34,16 +23,3 @@ jobs:
     - name: Print results json
       run: |
         echo "${{steps.analyse_vuln.outputs.ticketLists}}"
-  printresults:
-    name: download results
-    needs: static-query
-    runs-on: windows-latest
-    steps:
-      - name: Download vulnresults
-        uses: actions/download-artifact@v2
-        with:
-          name: vulnResult
-      - shell: bash
-        run: |
-          value=`cat vulnResult.json`
-          echo $value
