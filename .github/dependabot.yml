@@ -1,18 +1,20 @@
----
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: "/javascript"
+  - package-ecosystem: gomod
+    directory: "/"
     allow:
     # Allow both direct and indirect updates for all packages
       - dependency-type: "all"
     schedule:
       interval: daily
-    assignees:
-      - "root-lib"
-    reviewers:
-      - "root-lib"
-    target-branch: "dev"
     labels:
-      - "security checks"
-
+      - "Gosecurity"
+  - package-ecosystem: docker
+    directory: "/"
+    allow:
+    # Allow both direct and indirect updates for all packages
+      - dependency-type: "all"
+    schedule:
+      interval: daily
+    labels:
+      - "Dockersecurity"
